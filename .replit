@@ -15,23 +15,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "STARTCOPE MEGA FM"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
 args = "STARTCOPE FM Server"
-
-[[workflows.workflow]]
-name = "STARTCOPE MEGA FM"
-author = "agent"
-
-[workflows.workflow.metadata]
-outputType = "webview"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "node server.js"
-waitForPort = 5000
 
 [[workflows.workflow]]
 name = "STARTCOPE FM Server"

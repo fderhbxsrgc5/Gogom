@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STARTCOPE MEGA FM - Live 24/7</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="radio-theme">
+    <div class="container">
+        <header>
+            <h1 class="glow-text">STARTCOPE MEGA FM</h1>
+            <p class="live-tag">LIVE 24/7 ACTIVE MUSIC</p>
+        </header>
+
+        <main>
+            <div class="player-container">
+                <div class="now-playing">
+                    <div class="visualizer">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <h2 id="current-track-name">No track playing</h2>
+                </div>
+                
+                <audio id="radio-player" controls preload="auto">
+                    Your browser does not support the audio element.
+                </audio>
+
+                <div class="controls">
+                    <button id="play-btn">PLAY LIVE</button>
+                </div>
+            </div>
+
+            <div class="playlist-box">
+                <h3>Upcoming Tracks</h3>
+                <ul id="playlist-display">
+                    <% playlist.forEach(track => { %>
+                        <li><%= track %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <a href="/login" class="admin-link">Admin Login</a>
+        </footer>
+    </div>
+
+    <script>
+        const playlist = <%- JSON.stringify(playlist) %>;
+        const player = document.getElementById('radio-player');
+        const trackNameDisplay = document.getElementById('current-track-name');
+        const playBtn = document.getElementById('play-btn');
+        let currentIndex = 0;
+
+        function playNext() {
+            if (playlist.length === 0) return;
+            
+            player.src = '/music/' + playlist[currentIndex];
+            trackNameDisplay.innerText = playlist[currentIndex];
+            player.play().catch(e => console.log("Auto-play blocked or error:", e));
+            
+            currentIndex = (currentIndex + 1) % playlist.length;
+        }
+
+        player.onended = playNext;
+
+        playBtn.onclick = () => {
+            if (playlist.length > 0) {
+                if (player.paused) {
+                    playNext();
+                    playBtn.innerText = "STOP";
+                } else {
+                    player.pause();
+                    playBtn.innerText = "PLAY LIVE";
+                }
+            } else {
+                alert("Playlist is empty!");
+            }
+        };
+
+        // Attempt initial load
+        if (playlist.length > 0) {
+            player.src = '/music/' + playlist[0];
+            trackNameDisplay.innerText = playlist[0];
+        }
+    </script>
+</body>
+</html>

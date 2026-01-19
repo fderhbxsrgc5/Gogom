@@ -61,6 +61,17 @@ async function deleteSong(filename) {
 
 // KMPS Signal Simulator
 setInterval(() => {
-    const signal = Math.floor(Math.random() * 100) + 50;
-    document.getElementById('signal').innerText = signal;
-}, 2000);
+    const signal = Math.floor(Math.random() * 100) + 900; // Boosted signal look
+    document.getElementById('signal').innerText = signal + "." + Math.floor(Math.random() * 99);
+}, 1000);
+
+// Keep screen awake if possible
+if ('wakeLock' in navigator) {
+    let wakeLock = null;
+    const requestWakeLock = async () => {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+        } catch (err) {}
+    };
+    document.addEventListener('click', requestWakeLock);
+}

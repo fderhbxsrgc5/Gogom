@@ -8,6 +8,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="radio-theme">
+    
+    <!-- Top Menu Button -->
+    <div class="top-nav">
+        <button id="menu-dots" class="dots-btn">⋮</button>
+    </div>
+
+    <!-- Slide-out Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <span class="close-sidebar">&times;</span>
+        <div class="sidebar-content">
+            <% if (!isAdmin) { %>
+                <h3>Admin Login</h3>
+                <form action="/login" method="POST">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+            <% } else { %>
+                <h3>Admin Panel</h3>
+                <form action="/logout" method="POST">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+                <hr>
+                <div class="admin-actions">
+                    <h4>Upload Music</h4>
+                    <form action="/upload" method="POST" enctype="multipart/form-data">
+                        <input type="file" name="music" accept="audio/*" multiple required>
+                        <button type="submit">Upload</button>
+                    </form>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1 class="glow-text">STARTCOPE MEGA FM</h1>
@@ -33,24 +66,31 @@
 
                 <div class="controls">
                     <button id="play-btn">PLAY LIVE</button>
-                    <button id="upload-trigger" class="upload-btn">UPLOAD MUSIC</button>
-                </div>
-
-                <!-- Hidden Upload Form -->
-                <div id="upload-modal" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <h3>Upload Music</h3>
-                        <form action="/upload" method="POST" enctype="multipart/form-data">
-                            <input type="file" name="music" accept="audio/*" multiple required>
-                            <button type="submit">Start Upload</button>
-                        </form>
-                    </div>
                 </div>
             </div>
 
+            <div class="info-section">
+                <h3>ABOUT THIS RADIO MUSIC MEGA MANILA</h3>
+                <p>Ang iyong 24/7 na kasama sa musika, hatid ang pinakamainit na hits sa Mega Manila!</p>
+            </div>
+
+            <div class="rating-section">
+                <h3>RATE OUR FM</h3>
+                <form action="/rate" method="POST" class="star-rating">
+                    <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                    <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                    <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                    <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                    <button type="submit" class="rate-submit">SUBMIT RATE</button>
+                </form>
+                <div class="rating-stats">
+                    <p>Total Ratings: <%= ratings.length %></p>
+                </div>
+            </div>
+
+            <% if (isAdmin) { %>
             <div class="playlist-box">
-                <h3>Radio Playlist</h3>
+                <h3>Admin Music Manager</h3>
                 <ul id="playlist-display">
                     <% playlist.forEach(track => { %>
                         <li>
@@ -58,27 +98,18 @@
                                 <span><%= track %></span>
                                 <form action="/delete" method="POST" style="display:inline;">
                                     <input type="hidden" name="filename" value="<%= track %>">
-                                    <button type="submit" class="mini-delete">×</button>
+                                    <button type="submit" class="mini-delete">DELETE</button>
                                 </form>
                             </div>
                         </li>
                     <% }) %>
                 </ul>
             </div>
+            <% } %>
         </main>
+    </div>
 
-        <script>
-            // Modal Logic
-            const modal = document.getElementById("upload-modal");
-            const btn = document.getElementById("upload-trigger");
-            const span = document.getElementsByClassName("close")[0];
-
-            btn.onclick = () => modal.style.display = "block";
-            span.onclick = () => modal.style.display = "none";
-            window.onclick = (event) => {
-                if (event.target == modal) modal.style.display = "none";
-            }
-
+    <script>
         const playlist = <%- JSON.stringify(playlist) %>;
         const player = document.getElementById('radio-player');
         const trackNameDisplay = document.getElementById('current-track-name');
@@ -86,7 +117,11 @@
         let currentIndex = 0;
 
         function playNext() {
-            if (playlist.length === 0) return;
+            if (playlist.length === 0) {
+                // If no playlist, try to play the current one again if it exists
+                if (player.src) player.play();
+                return;
+            }
             
             player.src = '/music/' + playlist[currentIndex];
             trackNameDisplay.innerText = playlist[currentIndex];
@@ -98,9 +133,10 @@
         player.onended = playNext;
 
         playBtn.onclick = () => {
-            if (playlist.length > 0) {
+            if (playlist.length > 0 || player.src) {
                 if (player.paused) {
-                    playNext();
+                    if (!player.src && playlist.length > 0) playNext();
+                    else player.play();
                     playBtn.innerText = "STOP";
                 } else {
                     player.pause();
@@ -111,7 +147,15 @@
             }
         };
 
-        // Attempt initial load
+        // Sidebar logic
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.getElementById('menu-dots');
+        const closeBtn = document.querySelector('.close-sidebar');
+
+        menuBtn.onclick = () => sidebar.classList.add('active');
+        closeBtn.onclick = () => sidebar.classList.remove('active');
+
+        // Initial setup
         if (playlist.length > 0) {
             player.src = '/music/' + playlist[0];
             trackNameDisplay.innerText = playlist[0];

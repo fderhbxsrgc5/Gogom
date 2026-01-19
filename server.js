@@ -18,10 +18,16 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 
+// Files for persistence without DB
+const ratingsFile = path.join(__dirname, 'ratings.json');
+if (!fs.existsSync(ratingsFile)) fs.writeFileSync(ratingsFile, JSON.stringify([]));
+
 // Storage for music
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/music');
+        const dir = 'public/music';
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        cb(null, dir);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -29,29 +35,53 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ 
     storage,
-    limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit per file
+    limits: { fileSize: 100 * 1024 * 1024 }
 });
 
 // Routes
 app.get('/', (req, res) => {
     const musicDir = path.join(__dirname, 'public/music');
     if (!fs.existsSync(musicDir)) fs.mkdirSync(musicDir, { recursive: true });
+    
     fs.readdir(musicDir, (err, files) => {
         const playlist = (files || []).filter(f => f.endsWith('.mp3') || f.endsWith('.m4a') || f.endsWith('.wav'));
-        res.render('index', { playlist });
+        const ratings = JSON.parse(fs.readFileSync(ratingsFile));
+        res.render('index', { playlist, ratings, isAdmin: req.session.isAdmin });
     });
 });
 
-app.post('/upload', upload.array('music'), (req, res) => {
+app.post('/login', (req, res) => {
+    if (req.body.password === '1989') {
+        req.session.isAdmin = true;
+    }
     res.redirect('/');
 });
 
+app.post('/logout', (req, res) => {
+    req.session.isAdmin = false;
+    res.redirect('/');
+});
+
+app.post('/rate', (req, res) => {
+    const { rating } = req.body;
+    const ratings = JSON.parse(fs.readFileSync(ratingsFile));
+    ratings.push({ rating: parseInt(rating), date: new Date() });
+    fs.writeFileSync(ratingsFile, JSON.stringify(ratings));
+    res.redirect('/');
+});
+
+app.post('/upload', (req, res) => {
+    if (!req.session.isAdmin) return res.redirect('/');
+    upload.array('music')(req, res, (err) => {
+        res.redirect('/');
+    });
+});
+
 app.post('/delete', (req, res) => {
+    if (!req.session.isAdmin) return res.redirect('/');
     const { filename } = req.body;
     const filePath = path.join(__dirname, 'public/music', filename);
-    if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-    }
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     res.redirect('/');
 });
 

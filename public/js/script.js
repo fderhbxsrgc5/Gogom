@@ -59,6 +59,43 @@ async function deleteSong(filename) {
     }
 }
 
+// Like functionality
+document.getElementById('like-btn').addEventListener('click', async () => {
+    const res = await fetch('/like', { method: 'POST' });
+    if (res.ok) {
+        const data = await res.json();
+        document.getElementById('like-count').innerText = data.likes;
+        localStorage.setItem('hasLiked', 'true');
+        document.getElementById('like-btn').disabled = true;
+    }
+});
+
+// Check if already liked
+if (localStorage.getItem('hasLiked')) {
+    document.getElementById('like-btn').disabled = true;
+}
+
+// Install PWA (APK feel)
+let deferredPrompt;
+const installBtn = document.getElementById('install-apk-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+});
+
+installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+        }
+        deferredPrompt = null;
+    }
+});
+
 // KMPS Signal Simulator
 setInterval(() => {
     const signal = Math.floor(Math.random() * 100) + 900; // Boosted signal look

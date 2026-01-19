@@ -10,8 +10,17 @@
 <body class="dark-theme">
     <div class="container">
         <header>
+            <div class="install-banner">
+                <button id="install-apk-btn" class="apk-btn">
+                    <span class="emoji">📻</span> INSTALL STARTCOPE FM OFFLINE FREE NO HEADSET
+                </button>
+            </div>
             <h1>STARCOPE DWIZ FM</h1>
             <p>Version 4.7</p>
+            <div class="stats-bar">
+                <span>👁️ <span id="view-count"><%= stats.views %></span> Views</span>
+                <button id="like-btn" class="like-btn">❤️ <span id="like-count"><%= stats.likes %></span> Likes</button>
+            </div>
         </header>
 
         <main>

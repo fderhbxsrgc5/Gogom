@@ -40,30 +40,27 @@ const upload = multer({
 
 // Routes
 app.get('/', (req, res) => {
-    try {
-        const musicDir = path.join(__dirname, 'public/music');
-        if (!fs.existsSync(musicDir)) fs.mkdirSync(musicDir, { recursive: true });
+    const musicDir = path.join(__dirname, 'public/music');
+    if (!fs.existsSync(musicDir)) fs.mkdirSync(musicDir, { recursive: true });
+    
+    fs.readdir(musicDir, (err, files) => {
+        let playlist = [];
+        if (!err && files) {
+            playlist = files.filter(f => f.endsWith('.mp3') || f.endsWith('.m4a') || f.endsWith('.wav'));
+        }
         
-        fs.readdir(musicDir, (err, files) => {
-            if (err) {
-                console.error("Error reading music directory:", err);
-                return res.render('index', { playlist: [], ratings: [] });
+        let ratings = [];
+        try {
+            if (fs.existsSync(ratingsFile)) {
+                const content = fs.readFileSync(ratingsFile, 'utf8');
+                ratings = JSON.parse(content || '[]');
             }
-            const playlist = (files || []).filter(f => f.endsWith('.mp3') || f.endsWith('.m4a') || f.endsWith('.wav'));
-            let ratings = [];
-            try {
-                if (fs.existsSync(ratingsFile)) {
-                    ratings = JSON.parse(fs.readFileSync(ratingsFile));
-                }
-            } catch (e) {
-                console.error("Error reading ratings file:", e);
-            }
-            res.render('index', { playlist, ratings });
-        });
-    } catch (error) {
-        console.error("Root route error:", error);
-        res.status(500).send("Something went wrong. Please try again later.");
-    }
+        } catch (e) {
+            console.error("Ratings read error:", e);
+        }
+        
+        res.render('index', { playlist, ratings });
+    });
 });
 
 app.post('/rate', (req, res) => {

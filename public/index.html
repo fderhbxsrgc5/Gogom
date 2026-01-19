@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STARTCOPE MEGA FM - Live 24/7</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="radio-theme">
+    
+    <div class="container">
+        <header>
+            <h1 class="glow-text">STARTCOPE MEGA FM</h1>
+            <p class="live-tag">LIVE 24/7 ACTIVE MUSIC</p>
+        </header>
+
+        <main>
+            <div class="player-container">
+                <div class="now-playing">
+                    <div class="visualizer">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <h2 id="current-track-name">No track playing</h2>
+                </div>
+                
+                <audio id="radio-player" controls preload="auto">
+                    Your browser does not support the audio element.
+                </audio>
+
+                <div class="controls">
+                    <button id="play-btn">PLAY LIVE</button>
+                    <button id="upload-trigger" class="upload-btn">UPLOAD MUSIC</button>
+                </div>
+
+                <!-- Hidden Upload Modal -->
+                <div id="upload-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-modal">&times;</span>
+                        <h3>Upload Music</h3>
+                        <form action="/upload" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="music" accept="audio/*" multiple required>
+                            <button type="submit">Start Upload</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>ABOUT THIS RADIO MUSIC MEGA MANILA</h3>
+                <p>Ang iyong 24/7 na kasama sa musika, hatid ang pinakamainit na hits sa Mega Manila!</p>
+            </div>
+
+            <div class="rating-section">
+                <h3>RATE OUR FM</h3>
+                <form action="/rate" method="POST" class="star-rating">
+                    <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                    <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                    <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                    <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                    <button type="submit" class="rate-submit">SUBMIT RATE</button>
+                </form>
+                <div class="rating-stats">
+                    <p id="total-ratings">Total Ratings: 0</p>
+                </div>
+            </div>
+
+            <div class="playlist-box">
+                <h3>Radio Playlist Manager</h3>
+                <ul id="playlist-display"></ul>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const playlist = [];
+        const player = document.getElementById('radio-player');
+        const trackNameDisplay = document.getElementById('current-track-name');
+        const playBtn = document.getElementById('play-btn');
+        let currentIndex = 0;
+
+        // Modal Logic
+        const modal = document.getElementById("upload-modal");
+        const btn = document.getElementById("upload-trigger");
+        const span = document.getElementsByClassName("close-modal")[0];
+
+        if (btn) btn.onclick = () => modal.style.display = "block";
+        if (span) span.onclick = () => modal.style.display = "none";
+        window.onclick = (event) => {
+            if (event.target == modal) modal.style.display = "none";
+        }
+
+        function playNext() {
+            if (playlist.length === 0) {
+                if (player.src) player.play();
+                return;
+            }
+            
+            player.src = '/music/' + playlist[currentIndex];
+            trackNameDisplay.innerText = playlist[currentIndex];
+            player.play().catch(e => console.log("Auto-play blocked or error:", e));
+            
+            currentIndex = (currentIndex + 1) % playlist.length;
+        }
+
+        player.onended = playNext;
+
+        playBtn.onclick = () => {
+            if (playlist.length > 0 || player.src) {
+                if (player.paused) {
+                    if (!player.src && playlist.length > 0) playNext();
+                    else player.play();
+                    playBtn.innerText = "STOP";
+                } else {
+                    player.pause();
+                    playBtn.innerText = "PLAY LIVE";
+                }
+            } else {
+                alert("Playlist is empty!");
+            }
+        };
+
+        // Initial setup
+        if (playlist.length > 0) {
+            player.src = '/music/' + playlist[0];
+            trackNameDisplay.innerText = playlist[0];
+        }
+    </script>
+</body>
+</html>

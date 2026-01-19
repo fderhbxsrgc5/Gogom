@@ -46,26 +46,8 @@ app.get('/', (req, res) => {
     fs.readdir(musicDir, (err, files) => {
         const playlist = (files || []).filter(f => f.endsWith('.mp3') || f.endsWith('.m4a') || f.endsWith('.wav'));
         const ratings = JSON.parse(fs.readFileSync(ratingsFile));
-        res.render('index', { playlist, ratings, isAdmin: req.session.isAdmin });
+        res.render('index', { playlist, ratings });
     });
-});
-
-app.post('/login', (req, res) => {
-    console.log('Login attempt with password:', req.body.password);
-    if (req.body.password && req.body.password.toString().trim() === '1989') {
-        req.session.isAdmin = true;
-        console.log('Login successful');
-    } else {
-        console.log('Login failed');
-    }
-    req.session.save(() => {
-        res.redirect('/');
-    });
-});
-
-app.post('/logout', (req, res) => {
-    req.session.isAdmin = false;
-    res.redirect('/');
 });
 
 app.post('/rate', (req, res) => {
@@ -76,15 +58,11 @@ app.post('/rate', (req, res) => {
     res.redirect('/');
 });
 
-app.post('/upload', (req, res) => {
-    if (!req.session.isAdmin) return res.redirect('/');
-    upload.array('music')(req, res, (err) => {
-        res.redirect('/');
-    });
+app.post('/upload', upload.array('music'), (req, res) => {
+    res.redirect('/');
 });
 
 app.post('/delete', (req, res) => {
-    if (!req.session.isAdmin) return res.redirect('/');
     const { filename } = req.body;
     const filePath = path.join(__dirname, 'public/music', filename);
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);

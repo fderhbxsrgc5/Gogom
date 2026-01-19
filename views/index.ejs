@@ -9,38 +9,6 @@
 </head>
 <body class="radio-theme">
     
-    <!-- Top Menu Button -->
-    <div class="top-nav">
-        <button id="menu-dots" class="dots-btn">⋮</button>
-    </div>
-
-    <!-- Slide-out Sidebar -->
-    <div id="sidebar" class="sidebar">
-        <span class="close-sidebar">&times;</span>
-        <div class="sidebar-content">
-            <% if (!isAdmin) { %>
-                <h3>Admin Login</h3>
-                <form action="/login" method="POST">
-                    <input type="password" name="password" placeholder="Password" required>
-                    <button type="submit">Login</button>
-                </form>
-            <% } else { %>
-                <h3>Admin Panel</h3>
-                <form action="/logout" method="POST">
-                    <button type="submit" class="logout-btn">Logout</button>
-                </form>
-                <hr>
-                <div class="admin-actions">
-                    <h4>Upload Music</h4>
-                    <form action="/upload" method="POST" enctype="multipart/form-data">
-                        <input type="file" name="music" accept="audio/*" multiple required>
-                        <button type="submit">Upload</button>
-                    </form>
-                </div>
-            <% } %>
-        </div>
-    </div>
-
     <div class="container">
         <header>
             <h1 class="glow-text">STARTCOPE MEGA FM</h1>
@@ -66,6 +34,19 @@
 
                 <div class="controls">
                     <button id="play-btn">PLAY LIVE</button>
+                    <button id="upload-trigger" class="upload-btn">UPLOAD MUSIC</button>
+                </div>
+
+                <!-- Hidden Upload Modal -->
+                <div id="upload-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-modal">&times;</span>
+                        <h3>Upload Music</h3>
+                        <form action="/upload" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="music" accept="audio/*" multiple required>
+                            <button type="submit">Start Upload</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -88,9 +69,8 @@
                 </div>
             </div>
 
-            <% if (isAdmin) { %>
             <div class="playlist-box">
-                <h3>Admin Music Manager</h3>
+                <h3>Radio Playlist Manager</h3>
                 <ul id="playlist-display">
                     <% playlist.forEach(track => { %>
                         <li>
@@ -105,7 +85,6 @@
                     <% }) %>
                 </ul>
             </div>
-            <% } %>
         </main>
     </div>
 
@@ -116,44 +95,17 @@
         const playBtn = document.getElementById('play-btn');
         let currentIndex = 0;
 
-        function playNext() {
-            if (playlist.length === 0) {
-                // If no playlist, try to play the current one again if it exists
-                if (player.src) player.play();
-                return;
-            }
-            
-            player.src = '/music/' + playlist[currentIndex];
-            trackNameDisplay.innerText = playlist[currentIndex];
-            player.play().catch(e => console.log("Auto-play blocked or error:", e));
-            
-            currentIndex = (currentIndex + 1) % playlist.length;
+        // Modal Logic
+        const modal = document.getElementById("upload-modal");
+        const btn = document.getElementById("upload-trigger");
+        const span = document.getElementsByClassName("close-modal")[0];
+
+        btn.onclick = () => modal.style.display = "block";
+        span.onclick = () => modal.style.display = "none";
+        window.onclick = (event) => {
+            if (event.target == modal) modal.style.display = "none";
         }
 
-        player.onended = playNext;
-
-        playBtn.onclick = () => {
-            if (playlist.length > 0 || player.src) {
-                if (player.paused) {
-                    if (!player.src && playlist.length > 0) playNext();
-                    else player.play();
-                    playBtn.innerText = "STOP";
-                } else {
-                    player.pause();
-                    playBtn.innerText = "PLAY LIVE";
-                }
-            } else {
-                alert("Playlist is empty!");
-            }
-        };
-
-        // Sidebar logic
-        const sidebar = document.getElementById('sidebar');
-        const menuBtn = document.getElementById('menu-dots');
-        const closeBtn = document.querySelector('.close-sidebar');
-
-        menuBtn.onclick = () => sidebar.classList.add('active');
-        closeBtn.onclick = () => sidebar.classList.remove('active');
 
         // Initial setup
         if (playlist.length > 0) {

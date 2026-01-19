@@ -116,49 +116,70 @@ audio {
     font-size: 0.8rem;
 }
 
-.admin-link {
-    color: rgba(255, 255, 255, 0.5);
-    text-decoration: none;
-    font-size: 0.7rem;
-    margin-top: 2rem;
-    display: inline-block;
-}
-
-/* Admin Styles */
-.admin-theme {
-    background: #1a1a1a;
-}
-
-.btn {
-    background: #4caf50;
-    color: white;
-    padding: 0.5rem 1rem;
+.upload-btn {
+    background: #ff0055 !important;
+    margin-left: 10px;
     border: none;
+    padding: 1rem 2rem;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
     border-radius: 5px;
-    cursor: pointer;
-}
-
-.delete-btn {
-    background: #f44336;
     color: white;
-    border: none;
-    padding: 2px 5px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 0.7rem;
+    transition: 0.3s;
 }
 
-.login-box {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2rem;
-    border-radius: 10px;
+.upload-btn:hover {
+    background: #00ffff !important;
+    color: black;
+    box-shadow: 0 0 20px #00ffff;
 }
 
-input {
-    display: block;
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
     width: 100%;
-    margin: 1rem 0;
-    padding: 0.5rem;
-    border-radius: 5px;
-    border: none;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
 }
+
+.modal-content {
+    background: #1a1a1a;
+    margin: 15% auto;
+    padding: 2rem;
+    border: 1px solid #00ffff;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 0 30px #00ffff;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover { color: #fff; }
+
+.track-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mini-delete {
+    background: none;
+    border: none;
+    color: #ff0055;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.mini-delete:hover { color: white; }

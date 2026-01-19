@@ -21,7 +21,7 @@
                         <div class="bar"></div>
                         <div class="bar"></div>
                         <div class="bar"></div>
-                        <div class="bar"></div>
+                        <div class="bar)</div>
                         <div class="bar"></div>
                     </div>
                     <h2 id="current-track-name">No track playing</h2>
@@ -33,25 +33,52 @@
 
                 <div class="controls">
                     <button id="play-btn">PLAY LIVE</button>
+                    <button id="upload-trigger" class="upload-btn">UPLOAD MUSIC</button>
+                </div>
+
+                <!-- Hidden Upload Form -->
+                <div id="upload-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h3>Upload Music</h3>
+                        <form action="/upload" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="music" accept="audio/*" multiple required>
+                            <button type="submit">Start Upload</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
             <div class="playlist-box">
-                <h3>Upcoming Tracks</h3>
+                <h3>Radio Playlist</h3>
                 <ul id="playlist-display">
                     <% playlist.forEach(track => { %>
-                        <li><%= track %></li>
+                        <li>
+                            <div class="track-info">
+                                <span><%= track %></span>
+                                <form action="/delete" method="POST" style="display:inline;">
+                                    <input type="hidden" name="filename" value="<%= track %>">
+                                    <button type="submit" class="mini-delete">×</button>
+                                </form>
+                            </div>
+                        </li>
                     <% }) %>
                 </ul>
             </div>
         </main>
 
-        <footer>
-            <a href="/login" class="admin-link">Admin Login</a>
-        </footer>
-    </div>
+        <script>
+            // Modal Logic
+            const modal = document.getElementById("upload-modal");
+            const btn = document.getElementById("upload-trigger");
+            const span = document.getElementsByClassName("close")[0];
 
-    <script>
+            btn.onclick = () => modal.style.display = "block";
+            span.onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            }
+
         const playlist = <%- JSON.stringify(playlist) %>;
         const player = document.getElementById('radio-player');
         const trackNameDisplay = document.getElementById('current-track-name');

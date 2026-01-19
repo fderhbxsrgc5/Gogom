@@ -32,51 +32,24 @@ const upload = multer({ storage });
 // Routes
 app.get('/', (req, res) => {
     const musicDir = path.join(__dirname, 'public/music');
+    if (!fs.existsSync(musicDir)) fs.mkdirSync(musicDir, { recursive: true });
     fs.readdir(musicDir, (err, files) => {
         const playlist = (files || []).filter(f => f.endsWith('.mp3') || f.endsWith('.m4a') || f.endsWith('.wav'));
         res.render('index', { playlist });
     });
 });
 
-app.get('/login', (req, res) => {
-    res.render('login');
-});
-
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    if (username === '09121170134' && password === '198970') {
-        req.session.isAdmin = true;
-        res.redirect('/admin');
-    } else {
-        res.render('login', { error: 'Invalid credentials' });
-    }
-});
-
-app.get('/admin', (req, res) => {
-    if (!req.session.isAdmin) return res.redirect('/login');
-    const musicDir = path.join(__dirname, 'public/music');
-    fs.readdir(musicDir, (err, files) => {
-        const playlist = (files || []).filter(f => f.endsWith('.mp3') || f.endsWith('.m4a') || f.endsWith('.wav'));
-        res.render('admin', { playlist });
-    });
-});
-
-app.post('/upload', (req, res) => {
-    if (!req.session.isAdmin) return res.status(403).send('Unauthorized');
-    upload.array('music', 10)(req, res, (err) => {
-        if (err) return res.send('Error uploading files');
-        res.redirect('/admin');
-    });
+app.post('/upload', upload.array('music'), (req, res) => {
+    res.redirect('/');
 });
 
 app.post('/delete', (req, res) => {
-    if (!req.session.isAdmin) return res.status(403).send('Unauthorized');
     const { filename } = req.body;
     const filePath = path.join(__dirname, 'public/music', filename);
     if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
     }
-    res.redirect('/admin');
+    res.redirect('/');
 });
 
 app.listen(port, '0.0.0.0', () => {

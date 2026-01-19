@@ -44,11 +44,11 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    if (username === 'admin' && password === 'admin123') {
+    if (username === '09121170134' && password === '198970') {
         req.session.isAdmin = true;
         res.redirect('/admin');
     } else {
-        res.send('Invalid credentials');
+        res.render('login', { error: 'Invalid credentials' });
     }
 });
 

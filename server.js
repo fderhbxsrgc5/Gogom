@@ -51,10 +51,16 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    if (req.body.password === '1989') {
+    console.log('Login attempt with password:', req.body.password);
+    if (req.body.password && req.body.password.toString().trim() === '1989') {
         req.session.isAdmin = true;
+        console.log('Login successful');
+    } else {
+        console.log('Login failed');
     }
-    res.redirect('/');
+    req.session.save(() => {
+        res.redirect('/');
+    });
 });
 
 app.post('/logout', (req, res) => {

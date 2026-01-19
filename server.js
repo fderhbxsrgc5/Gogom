@@ -27,7 +27,10 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage });
+const upload = multer({ 
+    storage,
+    limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit per file
+});
 
 // Routes
 app.get('/', (req, res) => {

@@ -11,51 +11,21 @@ body {
     overflow-x: hidden;
 }
 
-.upload-btn {
-    background: #ff0055;
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-family: inherit;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-left: 10px;
-    transition: 0.3s;
+.ad-btn {
+    background: #ffcc00 !important;
+    color: black !important;
 }
 
-.upload-btn:hover {
-    background: #00ffff;
-    color: black;
-    box-shadow: 0 0 20px #00ffff;
+.listeners-tag {
+    color: #00ff00;
+    font-size: 0.9rem;
+    margin-top: 5px;
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9);
-}
-
-.modal-content {
-    background: #1a1a1a;
-    margin: 15% auto;
-    padding: 2rem;
-    border: 1px solid #00ffff;
-    width: 80%;
-    max-width: 400px;
-    border-radius: 10px;
-}
-
-.close-modal {
-    float: right;
-    font-size: 2rem;
-    cursor: pointer;
-    color: #ff0055;
+hr {
+    border: 0;
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+    margin: 20px 0;
 }
 
 .container {
@@ -129,6 +99,53 @@ body {
     background: #ff0055;
     color: white;
     box-shadow: 0 0 20px #ff0055;
+}
+
+.upload-btn {
+    background: #ff0055;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 10px;
+    transition: 0.3s;
+}
+
+.upload-btn:hover {
+    background: #00ffff;
+    color: black;
+    box-shadow: 0 0 20px #00ffff;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    background: #1a1a1a;
+    margin: 15% auto;
+    padding: 2rem;
+    border: 1px solid #00ffff;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+.close-modal {
+    float: right;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #ff0055;
 }
 
 .info-section {

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STARCOPE DWIZ FM</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body class="dark-theme">
+    <div class="container">
+        <header>
+            <h1>STARCOPE DWIZ FM</h1>
+            <p>Version 4.7</p>
+        </header>
+
+        <main>
+            <div class="player-box">
+                <audio id="audio-player" controls></audio>
+                <div class="controls">
+                    <button id="play-btn">PLAY</button>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <h3>Upload Music</h3>
+                <form action="/upload" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="music" accept="audio/*" required>
+                    <button type="submit">Upload</button>
+                </form>
+            </div>
+
+            <div class="playlist-box">
+                <h3>Playlist</h3>
+                <ul id="playlist">
+                    <% playlist.forEach(song => { %>
+                        <li data-src="/music/<%= song %>">
+                            <span><%= song %></span>
+                            <button class="delete-btn" onclick="deleteSong('<%= song %>')">Delete</button>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+
+            <div class="dashboard">
+                <h3>Dashboard Storage</h3>
+                <p>Storage: Unlimited</p>
+                <p>RAM: 8GB</p>
+                <p>Signal: <span id="signal">0</span> KMPS</p>
+            </div>
+
+            <div class="settings">
+                <h3>Settings</h3>
+                <button onclick="setTheme('dark-theme')">Dark Theme</button>
+                <button onclick="setTheme('blue-theme')">Blue Theme</button>
+            </div>
+
+            <div class="about">
+                <h3>About STARCOPE FM</h3>
+                <p>Version 4.7 - High Quality Radio Station Stream</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
+</body>
+</html>

@@ -3,93 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STARTCOPE MEGA FM - Mega Lite</title>
+    <title>STARTCOPE FM v7.8.4</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body class="radio-theme">
+<body class="spotify-theme">
     
-    <!-- Get Started Screen -->
     <div id="get-started-screen" class="full-screen-overlay">
         <div class="welcome-box">
+            <h1 class="version-tag">VERSION 7.8.4</h1>
             <h2 class="creator-credit">THIS STARTCOPE MEGA FM CREATED BY THE DJ MANUELSON THE ONE AND ONLY SUPER POGI SA TUGTUGAN AT HITS SI MANUELSON ANG BAHALA SAYO</h2>
             <button id="get-started-btn" class="glow-btn">GET STARTED</button>
         </div>
     </div>
 
-    <!-- Registration Screen -->
-    <div id="register-screen" class="full-screen-overlay" style="display:none;">
-        <div class="welcome-box">
-            <h3>REGISTER YOUR NAME</h3>
-            <input type="text" id="user-name-input" placeholder="Your Name" class="lite-input">
-            <button id="register-btn" class="glow-btn">MEGA LITE</button>
-        </div>
-    </div>
-
-    <!-- Main App Content -->
-    <div id="main-app" style="display:none;">
-        <div class="top-nav">
-            <button id="menu-lite-btn" class="lite-nav-btn">MEGA LITE MENU ☰</button>
-            <span id="display-user-name" class="user-badge"></span>
-        </div>
-
-        <!-- Slide-out Menu -->
-        <div id="lite-menu" class="sidebar">
-            <span class="close-sidebar">&times;</span>
-            <div class="sidebar-content">
-                <h2>MEGA LITE</h2>
-                <div class="post-form">
-                    <h3>Post Your Content</h3>
-                    <form action="/post?type=post" method="POST" enctype="multipart/form-data">
-                        <textarea name="content" placeholder="What's on your mind?" required></textarea>
-                        <input type="file" name="image" accept="image/*">
-                        <input type="hidden" name="author" id="post-author-field">
-                        <button type="submit" class="lite-submit">POST CONTENT</button>
-                    </form>
-                </div>
-                <hr>
-                <div class="admin-controls">
-                    <h3>Radio Admin</h3>
-                    <button id="upload-music-trigger" class="upload-btn">UPLOAD MUSIC</button>
-                    <button id="upload-ads-trigger" class="upload-btn ad-btn">UPLOAD ADS</button>
-                </div>
+    <div class="app-layout">
+        <!-- Spotify-style Sidebar -->
+        <aside class="sidebar-nav">
+            <div class="logo">
+                <h2 class="glow-text">STARTCOPE</h2>
             </div>
-        </div>
+            <nav>
+                <ul>
+                    <li class="active"><span class="icon">🏠</span> Home</li>
+                    <li id="menu-lite-btn"><span class="icon">📱</span> Mega Lite</li>
+                    <li id="upload-music-trigger"><span class="icon">🎵</span> Add Music</li>
+                    <li id="upload-ads-trigger"><span class="icon">📢</span> Add Ads</li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <p>v7.8.4</p>
+                <p id="display-user-name" class="user-badge"></p>
+            </div>
+        </aside>
 
-        <div class="container">
-            <header>
-                <h1 class="glow-text">STARTCOPE MEGA FM</h1>
-                <p class="live-tag">LIVE 24/7 ACTIVE MUSIC</p>
-                <p class="listeners-tag">Listeners: 0</p>
+        <!-- Main Content Area -->
+        <main class="main-view">
+            <header class="top-bar">
+                <div class="listeners-tag">Listeners: 0</div>
             </header>
 
-            <main>
-                <div class="player-container">
-                    <div class="now-playing">
-                        <div class="visualizer">
-                            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                        </div>
-                        <h2 id="current-track-name">No track playing</h2>
-                        <p id="track-type" style="color: #ff0055; font-size: 0.8rem;"></p>
-                    </div>
-                    <audio id="radio-player" controls preload="auto"></audio>
-                    <div class="controls">
-                        <button id="play-btn">PLAY LIVE</button>
+            <div class="content-wrapper">
+                <!-- Radio Info -->
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h3>STARTCOPE FM</h3>
+                        <p class="live-tag">LIVE 24/7 ACTIVE MUSIC</p>
+                        <p>Ang iyong 24/7 na kasama sa musika, hatid ang pinakamainit na hits sa Mega Manila!</p>
                     </div>
                 </div>
 
                 <!-- Feed Section -->
                 <div class="feed-section">
-                    <h3>MEGA LITE FEED</h3>
-                    <div id="posts-container"></div>
+                    <h3>SOCIAL FEED</h3>
+                    <div id="posts-container" class="posts-grid"></div>
                 </div>
-
-                <!-- Radio Info -->
-                <div class="info-section">
-                    <h3>ABOUT THIS RADIO MUSIC MEGA MANILA</h3>
-                    <p>Ang iyong 24/7 na kasama sa musika, hatid ang pinakamainit na hits sa Mega Manila!</p>
-                </div>
-
+                
                 <div class="rating-section">
                     <h3>RATE OUR FM</h3>
                     <form action="/rate" method="POST" class="star-rating">
@@ -101,79 +70,73 @@
                     </form>
                     <p>Total Ratings: 0</p>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
+
+        <!-- Spotify-style Bottom Player -->
+        <footer class="now-playing-bar">
+            <div class="track-info-side">
+                <div class="visualizer">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                </div>
+                <div class="track-details">
+                    <h4 id="current-track-name">No track playing</h4>
+                    <p id="track-type">Radio v7.8.4</p>
+                </div>
+            </div>
+            
+            <div class="player-controls">
+                <audio id="radio-player" preload="auto"></audio>
+                <button id="play-btn" class="main-play-btn">▶</button>
+                <div class="playback-info">
+                    <span id="player-status">READY</span>
+                </div>
+            </div>
+
+            <div class="extra-controls">
+                <!-- Settings/Volume placeholder -->
+            </div>
+        </footer>
     </div>
 
-    <!-- Modals (Admin) -->
+    <!-- Modals -->
     <div id="music-modal" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h3>Upload Music</h3><form action="/upload?type=music" method="POST" enctype="multipart/form-data"><input type="file" name="files" accept="audio/*" multiple required><button type="submit">Upload Music</button></form></div></div>
     <div id="ads-modal" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h3>Upload Ads</h3><form action="/upload?type=ad" method="POST" enctype="multipart/form-data"><input type="file" name="files" accept="audio/*" multiple required><button type="submit">Upload Ads</button></form></div></div>
+    <div id="lite-menu" class="modal"><div class="modal-content"><span class="close-modal">&times;</span><h3>Post Your Content</h3><form action="/post?type=post" method="POST" enctype="multipart/form-data"><textarea name="content" placeholder="What's on your mind?" required></textarea><input type="file" name="image" accept="image/*"><input type="hidden" name="author" id="post-author-field"><button type="submit" class="lite-submit">POST CONTENT</button></form></div></div>
 
     <script>
         const playlist = [];
         const adsList = [];
         const initialPosts = [];
-        let userName = localStorage.getItem('megaLiteName');
+        let userName = localStorage.getItem('megaLiteName') || "Listener";
 
         const player = document.getElementById('radio-player');
         const trackNameDisplay = document.getElementById('current-track-name');
         const trackTypeDisplay = document.getElementById('track-type');
         const playBtn = document.getElementById('play-btn');
+        const statusDisplay = document.getElementById('player-status');
         
         let musicCounter = 0;
         let isAdPlaying = false;
         let playedMusic = [];
         let playedAds = [];
 
-        // App Flow
         document.getElementById('get-started-btn').onclick = () => {
             document.getElementById('get-started-screen').style.display = 'none';
-            if (!userName) document.getElementById('register-screen').style.display = 'flex';
-            else startApp();
-        };
-
-        document.getElementById('register-btn').onclick = async () => {
-            const name = document.getElementById('user-name-input').value.trim();
-            if (!name) return alert("Please enter your name");
-            const res = await fetch('/register', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name })
-            });
-            const data = await res.json();
-            if (data.success) {
-                localStorage.setItem('megaLiteName', data.name);
-                userName = data.name;
-                startApp();
-            }
-        };
-
-        function startApp() {
-            document.getElementById('register-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
             document.getElementById('display-user-name').innerText = userName;
             document.getElementById('post-author-field').value = userName;
             renderPosts();
-        }
+        };
 
         function renderPosts() {
             const container = document.getElementById('posts-container');
             container.innerHTML = initialPosts.map(post => `
                 <div class="post-card">
-                    <h4>${post.author}</h4>
+                    <h5>${post.author}</h5>
                     <p>${post.content}</p>
                     ${post.image ? `<img src="${post.image}" class="post-img">` : ''}
                     <div class="post-footer">
-                        <button onclick="likePost(${post.id})" class="like-btn">Like ❤️ <span id="likes-${post.id}">${post.likes}</span></button>
-                        <form action="/comment" method="POST" class="comment-form">
-                            <input type="hidden" name="postId" value="${post.id}">
-                            <input type="hidden" name="author" value="${userName}">
-                            <input type="text" name="comment" placeholder="Write a comment..." required>
-                            <button type="submit">Send</button>
-                        </form>
-                    </div>
-                    <div class="comments">
-                        ${post.comments.map(c => `<p><b>${c.author}:</b> ${c.text}</p>`).join('')}
+                        <span onclick="likePost(${post.id})" class="like-label">❤️ <span id="likes-${post.id}">${post.likes}</span></span>
                     </div>
                 </div>
             `).join('');
@@ -189,7 +152,6 @@
             if (data.success) document.getElementById(`likes-${id}`).innerText = data.likes;
         }
 
-        // Radio Logic (Same as before)
         function getRandomItem(list, playedList) {
             let available = list.filter(item => !playedList.includes(item));
             if (available.length === 0) { playedList.length = 0; available = list; }
@@ -206,7 +168,8 @@
                 const track = getRandomItem(playlist, playedMusic);
                 player.src = '/music/' + track;
                 trackNameDisplay.innerText = track;
-                trackTypeDisplay.innerText = "NOW PLAYING: MUSIC";
+                trackTypeDisplay.innerText = "Music";
+                statusDisplay.innerText = "PLAYING MUSIC";
                 musicCounter++;
                 player.play().catch(e => console.log(e));
             }
@@ -218,23 +181,25 @@
             const ad = getRandomItem(adsList, playedAds);
             player.src = '/ads/' + ad;
             trackNameDisplay.innerText = ad;
-            trackTypeDisplay.innerText = "NOW PLAYING: AD " + (index + 1);
+            trackTypeDisplay.innerText = "Commercial Ad";
+            statusDisplay.innerText = `AD ${index + 1}/6`;
             player.onended = () => playAdsSequence(index + 1);
             player.play().catch(e => playAdsSequence(index + 1));
         }
 
         player.onended = playNext;
         playBtn.onclick = () => {
-            if (player.paused) { fetch('/update-listeners', {method: 'POST'}); playNext(); playBtn.innerText = "STOP"; }
-            else { player.pause(); playBtn.innerText = "PLAY LIVE"; }
+            if (player.paused) { 
+                fetch('/update-listeners', {method: 'POST'}); 
+                playNext(); 
+                playBtn.innerText = "⏸"; 
+            } else { 
+                player.pause(); 
+                playBtn.innerText = "▶"; 
+                statusDisplay.innerText = "PAUSED";
+            }
         };
 
-        // Menu Logic
-        const sidebar = document.getElementById('lite-menu');
-        document.getElementById('menu-lite-btn').onclick = () => sidebar.classList.add('active');
-        document.querySelector('.close-sidebar').onclick = () => sidebar.classList.remove('active');
-
-        // Admin Modals
         function setupModal(triggerId, modalId) {
             const modal = document.getElementById(modalId);
             const btn = document.getElementById(triggerId);
@@ -243,6 +208,11 @@
         }
         setupModal("upload-music-trigger", "music-modal");
         setupModal("upload-ads-trigger", "ads-modal");
+        setupModal("menu-lite-btn", "lite-menu");
+
+        window.onclick = (event) => {
+            if (event.target.className === 'modal') event.target.style.display = "none";
+        }
     </script>
 </body>
 </html>
